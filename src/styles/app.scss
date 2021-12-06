@@ -1,0 +1,6 @@
+$font-family-sans-serif: "Open Sans";
+$primary: #ee3442;
+$danger: darken($primary, 30%);
+
+@import "~bootstrap/scss/bootstrap.scss";
+@import "~bootstrap-icons/font/bootstrap-icons.scss";

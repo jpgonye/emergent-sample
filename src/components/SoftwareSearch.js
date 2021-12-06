@@ -36,8 +36,8 @@ export default function SoftwareSearch() {
     const debouncedChangeHandler = useMemo(
         () => debounce(handleChange, 500)
         , []);
-    
-        useEffect(() => {
+
+    useEffect(() => {
         return () => {
             debouncedChangeHandler.cancel();
         }
@@ -45,8 +45,8 @@ export default function SoftwareSearch() {
 
     const resultsTable = () => {
         return loading ? <div>Loading...</div> : <>
-            <div className="mb-3">
-                <span className="badge bg-primary rounded-pill">{items.length}</span> matching versions found
+            <div className="my-2 fw-bold text-end">
+                <span className="text-primary h5">{items.length}</span> records found
             </div>
             <table className="table table-hover border">
                 <thead className="bg-light text-dark border-bottom">
@@ -63,7 +63,7 @@ export default function SoftwareSearch() {
                         </tr>
                     )}
                     {items.length === 0 && <tr>
-                        <td colSpan="2">No matching records found</td>
+                        <td colSpan="2">No software found with version <b>{versionInput}</b> or greater</td>
                     </tr>}
                 </tbody>
             </table>
@@ -71,20 +71,57 @@ export default function SoftwareSearch() {
     };
 
     const invalidSearchMessage = <>
-        <p className="alert alert-light border p-5 text-center">The version number you have entered is invalid.  Please use the format [major].[minor].[patch] to search  (ex. 2, 2.0, 2.0.0, etc.).</p>
+        <div className="alert alert-light border mt-3 px-4">
+            <div className="d-flex">
+                <div>
+                    <h4 className="text-danger"><i className="bi bi-exclamation-triangle-fill text-danger"></i> Invalid Version Entered</h4>
+                    <p>
+                        The version number you have entered is invalid.
+                    </p>
+                    <p>
+                        Please use the format <span className="fw-bold fst-italic">major.minor.patch</span> to search.
+                    </p>
+                    <p className="mb-0">
+                        <b>Examples:</b> 2, 2.0, 2.0.0
+                    </p>
+                </div>
+            </div>
+        </div>
     </>;
 
+    const emptySearchMessage = <>
+        <div className="alert alert-light border mt-3 px-4">
+            <div className="d-flex">
+                <div>
+                    <h4 className="text-danger"><i className="bi bi-exclamation-triangle-fill text-danger"></i> Enter a Version Number to Search</h4>
+                    <p>
+                        Please enter a version number to search.  All software with that
+                        version or higher will be displayed.
+                    </p>
+                    <p>
+                        Use the format <span className="fw-bold fst-italic">major.minor.patch</span> to search.
+                    </p>
+                    <p className="mb-0">
+                        <b>Examples:</b> 2, 2.0, 2.0.0
+                    </p>
+                </div>
+            </div>
+        </div>
+    </>;
+
+    const searchMessage = versionInput === "" ? emptySearchMessage : invalidSearchMessage;
+
     const searchResults = () => {
-        return parsedVersion && parsedVersion.valid ? resultsTable() : invalidSearchMessage;
+        return parsedVersion && parsedVersion.valid ? resultsTable() : searchMessage;
     }
 
     return (
         <div>
-            <h2>
-                Software Version Search
+            <h2 className="display-6 text-primary mb-3">
+                Software Catalog Search
                 </h2>
-            <div className="mb-3">
-                <input type="text" className="form-control form-control-lg" onChange={debouncedChangeHandler} placeholder="Enter a version number (ex. 2, 2.0, 2.0.0, etc.)" />
+            <div className="">
+                <input type="text" className="form-control" onChange={debouncedChangeHandler} placeholder="Version number (e.g. 2, 2.0, 2.0.0, etc.)" />
             </div>
 
             {searchResults()}
